@@ -36,7 +36,7 @@ def run_brear_update():
 def run_brear_update():
     """Brear token güncelleme işlemini başlat"""
     print("Brear token güncelleniyor...")
-    subprocess.run(["python", "brear.py"])  # brear.py dosyasını çalıştır
+    subprocess.run(["python", "function/brear.py"])  # brear.py dosyasını çalıştır
 
 def run_character_creation():
     """Karakter oluşturma işlemini başlat"""

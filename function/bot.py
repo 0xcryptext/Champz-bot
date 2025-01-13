@@ -4,8 +4,10 @@ import time
 import random
 import os
 
-# Dosya yolları için sabit değişkenler
-DATA_DIR = "data"  # data klasörü
+# Ana dizine göre dosya yolları için sabit değişkenler
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))  # function klasörü
+PROJECT_ROOT = os.path.dirname(CURRENT_DIR)  # ana dizin
+DATA_DIR = os.path.join(PROJECT_ROOT, "data")  # data klasörü
 AUTH_FILE = os.path.join(DATA_DIR, "auth.json")
 CHARACTERS_FILE = os.path.join(DATA_DIR, "characters.json")
 FIGHT_ID_FILE = os.path.join(DATA_DIR, "fight_id.json")
@@ -199,105 +201,6 @@ def fight_skip(token):
             print(f"Fight Skip başarılı. Fight ID: {fight_id}")
         else:
             print(f"Fight Skip API isteği başarısız oldu: {response.status_code} - {response.text}")
-    else:
-        print("Geçerli bir fight_id bulunamadı.")
-
-# Daily Claim işlevi
-def get_active_days(token):
-    url = "https://api.champz.world/quests/current"
-    headers = {
-        "accept": "application/json",
-        "authorization": f"Bearer {token}",
-    }
-
-    try:
-        response = requests.post(url, headers=headers)
-
-        if response.status_code == 200:
-            data = response.json()
-
-            if "quests" in data:
-                for quest in data["quests"]:
-                    if quest.get("description") == "Daily Login":
-                        active_days = quest.get("last_claim_day", 0)
-                        print(f"Active Days: {active_days}")
-                        return active_days
-            print("Aktif gün verisi bulunamadı.")
-        else:
-            print(f"API isteği başarısız oldu. Hata kodu: {response.status_code}")
-            print("Hata mesajı:", response.text)
-
-    except requests.RequestException as e:
-        print(f"API isteği sırasında bir hata oluştu: {e}")
-
-    return None
-
-def get_daily_login_quest_id(token):
-    url = "https://api.champz.world/quests/current"
-    headers = {
-        "accept": "application/json",
-        "authorization": f"Bearer {token}",
-    }
-
-    try:
-        response = requests.post(url, headers=headers)
-
-        if response.status_code == 200:
-            data = response.json()
-
-            if "quests" in data:
-                for quest in data["quests"]:
-                    if quest.get("description") == "Daily Login":
-                        print(f"Daily Login Quest ID: {quest['id']}")
-                        return quest
-                print("'Daily Login' quest bulunamadı.")
-            else:
-                print("'quests' anahtarı JSON cevabında bulunamadı.")
-        else:
-            print(f"API isteği başarısız oldu. Hata kodu: {response.status_code}")
-            print("Hata mesajı:", response.text)
-
-    except requests.RequestException as e:
-        print(f"API isteği sırasında bir hata oluştu: {e}")
-
-    return None
-
-
-def should_claim_daily_login(quest_data, active_days):
-    """
-    Daily Login görevi claim edilmeli mi?
-    Eğer last_claim_day, active_days'e eşit değilse claim edilmesi gerekiyor.
-    """
-    last_claim_day = quest_data.get("last_claim_day", 0)
-
-    if last_claim_day != active_days:
-        return True  # Claim yapılmalı
-    return False  # Claim yapılmamalı
-
-def claim_quest(quest_id, token):
-    url = "https://api.champz.world/quests/claim"
-    headers = {
-        "accept": "application/json",
-        "authorization": f"Bearer {token}",
-    }
-
-    payload = {
-        "quest_id": quest_id
-    }
-
-    try:
-        response = requests.post(url, headers=headers, json=payload)
-
-        if response.status_code == 200:
-            print("Quest başarıyla claim edildi!")
-            print("Cevap:", response.json())
-        else:
-            print(f"Claim API isteği başarısız oldu. Hata kodu: {response.status_code}")
-            print("Hata mesajı:", response.text)
-
-    except requests.RequestException as e:
-        print(f"Claim API isteği sırasında bir hata oluştu: {e}")
-
 
 def main():
     BEARER_TOKENS = load_tokens_from_auth()  # Auth dosyasından tokenları yükle
@@ -306,31 +209,8 @@ def main():
         print("auth.json dosyasından token alınamadı veya boş.")
         return
 
-    for token in BEARER_TOKENS:
-        print(f"Token {token} ile işlemler başlatılıyor...")
-
-        # İlk olarak Daily Quest claim işlemi yapılacak
-        print("Daily Quest claim ediliyor...")
-        active_days = get_active_days(token)
-        
-        if active_days is not None:
-            print(f"Aktif gün sayısı: {active_days}")
-                
-            # Daily Login görevi alınır ve claim edilir
-            quest_data = get_daily_login_quest_id(token)
-            if quest_data:
-                if should_claim_daily_login(quest_data, active_days):
-                    print("Daily Login görevi claim edilecek...")
-                    claim_quest(quest_data['id'], token)
-                else:
-                    print("Daily Login görevi zaten claim edilmiş, işlem yapılmadı.")
-        else:
-            print("Aktif gün bilgisi alınamadı, günlük ödül alınamayacak.")
-
-        # Günlük ödül claim işlemi yalnızca bir kez yapılacak
-        print("Günlük ödül alınıyor...")
-        if quest_data:
-            claim_quest(quest_data['id'], token)  # Yalnızca bir kez günlük ödül claim edilir
+    for index, token in enumerate(BEARER_TOKENS, start=1):
+        print(f"{index}. hesap ile işlemler başlatılıyor...")
 
         # Karakterlerin AP değeri 0 olana kadar işlemler devam edecek
         while True:
@@ -364,11 +244,17 @@ def main():
 
             else:
                 # Eğer tüm karakterlerin AP değeri 0 ise işlemler durur
-                print(f"{token} için AP değeri 0 olan tüm karakterler var. Bir sonraki tokena geçiliyor.")
+                print(f"{index}. hesap için AP değeri 0 olan tüm karakterler var. Bir sonraki hesaba geçiliyor.")
                 break
 
-            # Bekleme süresi (isteğe bağlı)
+            # Bekleme süresi
             time.sleep(2)  # İki saniye beklemek, işlemi hızlandırmamak için
+
+        # Her hesap arasında 5-12 saniye bekle
+        if index < len(BEARER_TOKENS):  # Son hesap değilse bekle
+            wait_time = random.randint(5, 12)
+            print(f"\nBir sonraki hesaba geçmeden önce {wait_time} saniye bekleniyor...")
+            time.sleep(wait_time)
 
 if __name__ == "__main__":
     main()

@@ -18,23 +18,30 @@ def print_menu():
     print("2. Brear Token Güncelle")
     print("3. Karakterleri Oluştur")
     print("4. Item Giydir")
-    print("5. Çıkış")
-    print("\nSeçiminiz (1-5): ", end="")
+    print("5. Daily Claim")
+    print("6. Chest Aç")
+    print("7. Çıkış")
+    print("\nSeçiminiz (1-7): ", end="")
 
 def run_bot():
     """Botu başlat"""
     print("Bot başlatılıyor...")
-    subprocess.run(["python", "bot.py"])  # bot.py dosyasını çalıştır
+    subprocess.run(["python", "function/bot.py"])  # function/bot.py dosyasını çalıştır
+
+def run_brear_update():
+    """Brear token güncelleme işlemini başlat"""
+    print("Brear token güncelleniyor...")
+    subprocess.run(["python", "function/brear.py"])  # function/brear.py dosyasını çalıştır
 
 def run_character_creation():
     """Karakter oluşturma işlemini başlat"""
     print("Karakter oluşturma işlemi başlatılıyor...")
-    subprocess.run(["python", "karakter.py"])  # karakter.py dosyasını çalıştır
+    subprocess.run(["python", "function/karakter.py"])  # function/karakter.py dosyasını çalıştır
 
 def run_item_giydir():
     """Item giydirme işlemini başlat"""
     print("Item giydirme işlemi başlatılıyor...")
-    subprocess.run(["python", "itemgiy.py"])  # itemgiy.py dosyasını çalıştır
+    subprocess.run(["python", "function/itemgiy.py"])  # function/itemgiy.py dosyasını çalıştır
 
 def main():
     clear_screen()
@@ -48,10 +55,7 @@ def main():
             run_bot()  # Botu başlat
 
         elif choice == "2":
-            clear_screen()
-            print_header()
-            # Brear token güncelleme işlemleri
-            pass  # Buraya güncelleme kodunu ekleyin
+            run_brear_update()  # Brear token güncelleme işlemini başlat
 
         elif choice == "3":
             run_character_creation()  # Karakter oluşturma işlemini başlat
@@ -60,6 +64,14 @@ def main():
             run_item_giydir()  # Item giydirme işlemini başlat
 
         elif choice == "5":
+            print("Daily Claim işlemi başlatılıyor...")
+            subprocess.run(["python", "function/dailylogin.py"])  # function/dailylogin.py dosyasını çalıştır
+
+        elif choice == "6":
+            print("Chest açma işlemi başlatılıyor...")
+            subprocess.run(["python", "function/chestac.py"])  # function/chestac.py dosyasını çalıştır
+
+        elif choice == "7":
             clear_screen()
             print_header()
             print("Programdan çıkılıyor...")

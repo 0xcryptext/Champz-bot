@@ -26,6 +26,11 @@ def run_bot():
     print("Bot başlatılıyor...")
     subprocess.run(["python", "bot.py"])  # bot.py dosyasını çalıştır
 
+def run_brear_update():
+    """Brear token güncelleme işlemini başlat"""
+    print("Brear token güncelleniyor...")
+    subprocess.run(["python", "brear.py"])  # brear.py dosyasını çalıştır
+
 def run_character_creation():
     """Karakter oluşturma işlemini başlat"""
     print("Karakter oluşturma işlemi başlatılıyor...")
@@ -48,10 +53,7 @@ def main():
             run_bot()  # Botu başlat
 
         elif choice == "2":
-            clear_screen()
-            print_header()
-            # Brear token güncelleme işlemleri
-            pass  # Buraya güncelleme kodunu ekleyin
+            run_brear_update()  # Brear token güncelleme işlemini başlat
 
         elif choice == "3":
             run_character_creation()  # Karakter oluşturma işlemini başlat

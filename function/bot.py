@@ -120,6 +120,22 @@ def heal(token):
             else:
                 print(f"Heal API isteği başarısız oldu: {response.status_code}")
 
+# Level up işlevi
+def level_up_character(token, char_id):
+    url = "https://api.champz.world/char/lvlup"
+    headers = {
+        "accept": "application/json",
+        "authorization": f"Bearer {token}",
+        "content-type": "application/json"
+    }
+    try:
+        response = requests.post(url, headers=headers, json={"char": char_id})
+        if response.status_code == 200:
+            print(f"Character {char_id} leveled up!")
+        return response.status_code == 200
+    except Exception as e:
+        print(f"Level up error: {e}")
+        return False
 
 # Savaş işlevi
 def fight(token):
@@ -128,6 +144,12 @@ def fight(token):
 
     selected_character = None
     for char in characters_data:
+        # Check for level up first
+        if char.get('exp') == char.get('max_exp'):
+            level_up_character(token, char['id'])
+            time.sleep(2)
+        
+        # Continue with existing AP/HP checks
         ap = char.get('ap', 0)
         hp = char.get('hp', 0)
         if ap > 0 and hp > 0:

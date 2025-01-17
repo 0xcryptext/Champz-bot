@@ -15,12 +15,15 @@ def print_header():
 def print_menu():
     """Ana menüyü yazdır"""
     print("1. Botu Başlat")
-    print("2. Brear Token Güncelle")
+    print("2. Bearer Token Güncelle")
     print("3. Karakterleri Oluştur")
     print("4. Item Giydir")
     print("5. Daily Claim")
     print("6. Chest Aç")
-    print("7. Çıkış")
+    print("7. Quest")
+    print("8. Burn")
+    print("9. Çıkış")
+
     print("\nSeçiminiz (1-7): ", end="")
 
 def run_bot():
@@ -33,11 +36,6 @@ def run_brear_update():
     print("Brear token güncelleniyor...")
     subprocess.run(["python", "function/brear.py"])  # function/brear.py dosyasını çalıştır
 
-def run_brear_update():
-    """Brear token güncelleme işlemini başlat"""
-    print("Brear token güncelleniyor...")
-    subprocess.run(["python", "function/brear.py"])  # brear.py dosyasını çalıştır
-
 def run_character_creation():
     """Karakter oluşturma işlemini başlat"""
     print("Karakter oluşturma işlemi başlatılıyor...")
@@ -47,6 +45,15 @@ def run_item_giydir():
     """Item giydirme işlemini başlat"""
     print("Item giydirme işlemi başlatılıyor...")
     subprocess.run(["python", "function/itemgiy.py"])  # function/itemgiy.py dosyasını çalıştır
+
+def run_quest():
+    """QUEST işlemini başlat"""
+    print("Quest işlemi başlatılıyor...")
+    subprocess.run(["python", "function/quest.py"]) 
+def run_burn():
+    """BURN işlemini başlat"""
+    print("BURN işlemi başlatılıyor...")
+    subprocess.run(["python", "function/burn.py"]) 
 
 def main():
     clear_screen()
@@ -75,8 +82,13 @@ def main():
         elif choice == "6":
             print("Chest açma işlemi başlatılıyor...")
             subprocess.run(["python", "function/chestac.py"])  # function/chestac.py dosyasını çalıştır
-
         elif choice == "7":
+            print("Chest açma işlemi başlatılıyor...")
+            subprocess.run(["python", "function/quest.py"]) 
+        elif choice == "8":
+            print("burn açma işlemi başlatılıyor...")
+            subprocess.run(["python", "function/burn.py"])  # function/chestac.py dosyasını çalıştır
+        elif choice == "9":
             clear_screen()
             print_header()
             print("Programdan çıkılıyor...")
